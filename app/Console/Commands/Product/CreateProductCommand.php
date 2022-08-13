@@ -52,7 +52,7 @@ class CreateProductCommand extends Command
             resolve(ProductService::class)->create($data);
 
             //store image
-            Storage::put('images/'. uniqid() . \Str::of($data['image'])->afterLast('\\'), $image);
+            Storage::put('images/'. uniqid() . '.' . \Str::of($data['image'])->afterLast('.'), $image);
 
             $this->info('Product created successfully !!');
 

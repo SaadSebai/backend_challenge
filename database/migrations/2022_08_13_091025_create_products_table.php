@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('description');
             $table->float('price');
             $table->string('image');
-            $table->foreignIdFor(Category::class)->constrained();
+            $table->foreignIdFor(Category::class)->nullable()->constrained()->nullOnDelete();;
             $table->timestamps();
         });
     }

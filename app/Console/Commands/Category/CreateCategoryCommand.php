@@ -31,8 +31,8 @@ class CreateCategoryCommand extends Command
         $data = [];
 
         // read input data
-        $data['name']       = $this->ask('Please inter a name of your Category');
-        $data['parent_id']  = $this->ask('In case you want the attach a parent category, please inter the Id of the parent');
+        $data['name']       = $this->ask('Please enter a name for your Category');
+        $data['parent_id']  = $this->ask('In case you want the attach a parent category, please enter the Id of the parent');
 
         // create category
         try {

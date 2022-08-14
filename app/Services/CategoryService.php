@@ -7,6 +7,9 @@ use App\Repositories\CategoryRepository;
 
 class CategoryService
 {
+    /**
+     * @var CategoryRepository
+     */
     protected $categoryRepository;
 
     public function __construct()

@@ -4,9 +4,18 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use App\Traits\Imageable;
 
+/**
+ * @method string store(string|\Illuminate\Http\UploadedFile $image)
+ */
 class ProductService
 {
+    use Imageable;
+
+    /**
+     * @var ProductRepository
+     */
     protected $productRepository;
 
     public function __construct()
@@ -35,6 +44,8 @@ class ProductService
      */
     public function create(array $data): Product
     {
+        $data['image'] = self::store($data['image']);
+
         return $this->productRepository->create($data);
     }
 

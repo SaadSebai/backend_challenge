@@ -6,7 +6,6 @@ use App\Services\CategoryService;
 use App\Services\ProductService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class CreateProductCommand extends Command
 {
@@ -33,26 +32,20 @@ class CreateProductCommand extends Command
      */
     public function handle()
     {
-
         $data = [];
 
         // read input data
-        $data['name']           = $this->ask('Please enter a name of your Product');
-        $data['description']    = $this->ask('Please enter a description of your Product');
-        $data['price']          = $this->ask('Please enter a price of your Product');
-        $data['image']          = $this->ask('Please enter a image of your Product');
+        $data['name']           = $this->ask('Please enter a name for your Product');
+        $data['description']    = $this->ask('Please enter a description for your Product');
+        $data['price']          = $this->ask('Please enter a price for your Product');
+        $data['image']          = $this->ask('Please enter a image for your Product');
         $data['category_id']    = $this->ask('Please enter the ID of a Category for your Product');
 
         // create product
         try {
-            $image = File::get($data['image']);
-
             if(!$this->isValidData($data)) return;
 
             resolve(ProductService::class)->create($data);
-
-            //store image
-            Storage::put('images/'. uniqid() . '.' . \Str::of($data['image'])->afterLast('.'), $image);
 
             $this->info('Product created successfully !!');
 

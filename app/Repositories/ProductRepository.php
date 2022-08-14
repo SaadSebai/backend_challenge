@@ -6,7 +6,6 @@ use App\Models\Product;
 
 class ProductRepository
 {
-
     /**
      * Get a Product by Id
      *

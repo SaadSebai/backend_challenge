@@ -7,6 +7,16 @@ use App\Models\Category;
 class CategoryRepository
 {
     /**
+     * Get a paginated list of products
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAll(): \Illuminate\Database\Eloquent\Collection
+    {
+        return Category::all();
+    }
+
+    /**
      * Get a Category by Id
      *
      * @param  int $id

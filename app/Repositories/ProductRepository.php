@@ -3,9 +3,31 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProductRepository
 {
+    /**
+     * Get a paginated list of products
+     *
+     * @param array $data filters, sort field and sort order
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getAll(array $data = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return Product::with('category')
+                ->when($data['filters'] ?? false, function ($query, $filters) {
+
+                    $query->when(array_key_exists('category_id', $filters),
+                        fn($query) => $query->whereCategoryId($filters['category_id'])
+                    );
+
+                })
+                ->orderBy($data['sortField'] ?? 'name', $data['sortOrder'] ?? 'asc')
+                ->paginate();
+    }
+
     /**
      * Get a Product by Id
      *

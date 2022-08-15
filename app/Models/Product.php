@@ -12,6 +12,8 @@ class Product extends Model
 
     protected $fillable = ['name', 'description', 'price', 'image', 'category_id'];
 
+    const SORT_FIELDS = ['name', 'price'];
+
     /**
      * @return BelongsTo
      */

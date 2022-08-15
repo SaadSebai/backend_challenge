@@ -18,6 +18,16 @@ class CategoryService
     }
 
     /**
+     * Get a paginated list of products
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAll(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->categoryRepository->getAll();
+    }
+
+    /**
      * Get a Category by Id
      *
      * @param  int $id

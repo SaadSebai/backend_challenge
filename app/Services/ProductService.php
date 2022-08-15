@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Traits\Imageable;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * @method string store(string|\Illuminate\Http\UploadedFile $image)
@@ -21,6 +22,18 @@ class ProductService
     public function __construct()
     {
         $this->productRepository = resolve(ProductRepository::class);
+    }
+
+    /**
+     * Get a paginated list of products
+     *
+     * @param array $data filters, sort field and sort order
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getAll(array $data = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->productRepository->getAll($data);
     }
 
     /**

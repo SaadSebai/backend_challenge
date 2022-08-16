@@ -59,7 +59,7 @@ GET /api/products
 Create Product:
 
 ```http
-Post /api/products
+POST /api/products
 ```
 | Parameter | Type | Description |
 | :--- | :--- | :--- |

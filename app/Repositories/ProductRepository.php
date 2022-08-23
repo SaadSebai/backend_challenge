@@ -43,13 +43,23 @@ class ProductRepository
     /**
      * Create new Product
      *
-     * @param  array $data
+     * @param  string $name
+     * @param  string $description
+     * @param  float $price
+     * @param  string $image
+     * @param  integer $category_id
      *
      * @return Product
      */
-    public function create(array $data): Product
+    public function create(string $name, string $description, float $price, string $image, int $category_id): Product
     {
-        return Product::create($data);
+        return Product::create([
+            'name'          => $name,
+            'description'   => $description,
+            'price'         => $price,
+            'image'         => $image,
+            'category_id'   => $category_id
+        ]);
     }
 
     /**

@@ -32,7 +32,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request, ProductService $productService)
     {
         try {
-            $product = $productService->create($request->validated());
+            $product = $productService->create(...$request->validated());
 
             return response()->json(['product' => $product, 'message' => 'Product created successfully !!']);
 

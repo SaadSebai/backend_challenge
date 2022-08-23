@@ -21,7 +21,7 @@ class ProductService
 
     public function __construct()
     {
-        $this->productRepository = resolve(ProductRepository::class);
+        $this->productRepository = new ProductRepository;
     }
 
     /**
@@ -51,15 +51,19 @@ class ProductService
     /**
      * Create new Product
      *
-     * @param  array $data
+     * @param  string $name
+     * @param  string $description
+     * @param  float $price
+     * @param  string $image
+     * @param  integer $category_id
      *
      * @return Product
      */
-    public function create(array $data): Product
+    public function create(string $name, string $description, float $price, string $image, int $category_id): Product
     {
-        $data['image'] = self::store($data['image']);
+        $data['image'] = self::store($image);
 
-        return $this->productRepository->create($data);
+        return $this->productRepository->create(name: $name, description: $description, price: $price, image: $image, category_id: $category_id);
     }
 
     /**

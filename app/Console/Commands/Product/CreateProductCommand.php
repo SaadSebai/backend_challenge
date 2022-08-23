@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands\Product;
 
-use App\Services\CategoryService;
 use App\Services\ProductService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CreateProductCommand extends Command
 {
@@ -28,24 +29,24 @@ class CreateProductCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  ProductService $productService
+     *
      * @return int
      */
-    public function handle()
+    public function handle(ProductService $productService)
     {
-        $data = [];
-
         // read input data
-        $data['name']           = $this->ask('Please enter a name for your Product');
-        $data['description']    = $this->ask('Please enter a description for your Product');
-        $data['price']          = $this->ask('Please enter a price for your Product');
-        $data['image']          = $this->ask('Please enter a image for your Product');
-        $data['category_id']    = $this->ask('Please enter the ID of a Category for your Product');
+        $name           = $this->ask('Please enter a name for your Product');
+        $description    = $this->ask('Please enter a description for your Product');
+        $price          = $this->ask('Please enter a price for your Product');
+        $image          = $this->ask('Please enter a image for your Product');
+        $category_id    = $this->ask('Please enter the ID of a Category for your Product');
 
         // create product
         try {
-            if(!$this->isValidData($data)) return;
+            if($this->validation(name: $name, description: $description, price: $price, image: $image, category_id: $category_id)) return;
 
-            resolve(ProductService::class)->create($data);
+            $productService->create(name: $name, description: $description, price: $price, image: $image, category_id: $category_id);
 
             $this->info('Product created successfully !!');
 
@@ -56,26 +57,48 @@ class CreateProductCommand extends Command
     }
 
     /**
-     * Validate console data
+     * Validate Console input data,
+     * Returns true if data is invald
      *
-     * @param  array $data
+     * @param  mixed $name
+     * @param  mixed $description
+     * @param  mixed $price
+     * @param  mixed $image
+     * @param  mixed $category_id
      *
      * @return bool
      */
-    private function isValidData(array $data): bool
+    private function validation($name, $description, $price, $image, $category_id): bool
     {
-        if(!in_array(File::extension($data['image']), self::IMAGE_EXTENSIONS))
-        {
-            $this->line('Invalid image extention !!', 'bg=yellow');
-            return false;
+        $validator = Validator::make([
+            'name'          => $name,
+            'description'   => $description,
+            'price'         => $price,
+            'image'         => $image,
+            'category_id'   => $category_id
+        ], [
+            'name'          => ['required', 'string', 'max:121'],
+            'description'   => ['required', 'string', 'max:255'],
+            'price'         => ['required', 'numeric', 'max:9999999'],
+            'image'         => ['required', 'string'],
+            'category_id'   => ['nullable', 'bail', 'integer', Rule::exists('categories', 'id')]
+        ]);
+
+        if ($validator->fails()) {
+            $this->info('Failed to create Product:');
+
+            foreach ($validator->errors()->all() as $error) {
+                $this->error($error);
+            }
+            return true;
         }
 
-        if(!resolve(CategoryService::class)->getById($data['category_id']))
+        if(!in_array(File::extension($image), self::IMAGE_EXTENSIONS) || !File::exists($image))
         {
-            $this->line('This Category does not exist !!', 'bg=yellow');
-            return false;
+            $this->line('Invalid image !!', 'bg=yellow');
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

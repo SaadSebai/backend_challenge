@@ -31,13 +31,17 @@ class CategoryRepository
     /**
      * Create new Category
      *
-     * @param  array $data
+     * @param  string $name
+     * @param  int|null $parent_id
      *
      * @return Category
      */
-    public function create(array $data): Category
+    public function create(string $name, ?int $parent_id): Category
     {
-        return Category::create($data);
+        return Category::create([
+            'name'      => $name,
+            'parent_id' => $parent_id
+        ]);
     }
 
     /**

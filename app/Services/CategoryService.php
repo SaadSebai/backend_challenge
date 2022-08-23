@@ -14,7 +14,7 @@ class CategoryService
 
     public function __construct()
     {
-        $this->categoryRepository = resolve(CategoryRepository::class);
+        $this->categoryRepository = new CategoryRepository;
     }
 
     /**
@@ -42,13 +42,14 @@ class CategoryService
     /**
      * Create new Category
      *
-     * @param  array $data
+     * @param  string $name
+     * @param  integer|null $parent_id
      *
      * @return Category
      */
-    public function create(array $data): Category
+    public function create(string $name, ?int $parent_id): Category
     {
-        return $this->categoryRepository->create($data);
+        return $this->categoryRepository->create(name: $name, parent_id: $parent_id);
     }
 
     /**

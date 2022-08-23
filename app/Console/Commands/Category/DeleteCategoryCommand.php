@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands\Category;
 
+use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class DeleteCategoryCommand extends Command
 {
@@ -24,12 +27,12 @@ class DeleteCategoryCommand extends Command
     /**
      * Execute the console command.
      *
+     * @param  CategoryService $categoryService
+     *
      * @return int
      */
-    public function handle()
+    public function handle(CategoryService $categoryService)
     {
-        $categoryService = new CategoryService();
-
         // read input data
         $categoryId = $this->argument('id');
 
@@ -39,14 +42,9 @@ class DeleteCategoryCommand extends Command
 
         // find and delete category
         try {
+            if($this->validation(id: $categoryId)) return;
 
-            if(!$category = $categoryService->getById($categoryId))
-            {
-                $this->line('This Category does not exist !!', 'bg=yellow');
-                return;
-            }
-
-            $categoryService->delete($category);
+            $categoryService->delete(Category::find($categoryId));
 
             $this->info('Category deleted successfully !!');
 
@@ -54,5 +52,33 @@ class DeleteCategoryCommand extends Command
             $this->line('Category deletion faild !!', 'bg=red');
             $this->line($th);
         }
+    }
+
+    /**
+     * Validate Console input data,
+     * Returns true if data is invald
+     *
+     * @param  mixed $id
+     *
+     * @return bool
+     */
+    private function validation($id): bool
+    {
+        $validator = Validator::make([
+            'id' => $id
+        ], [
+            'id' => ['required', 'bail', 'integer', Rule::exists('categories', 'id')]
+        ]);
+
+        if ($validator->fails()) {
+            $this->info('Failed to delete Category:');
+
+            foreach ($validator->errors()->all() as $error) {
+                $this->error($error);
+            }
+            return true;
+        }
+
+        return false;
     }
 }
